@@ -12,6 +12,7 @@ from frontend.automation_page import AutomationPage
 from database.db_repository import Database
 
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
