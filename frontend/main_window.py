@@ -25,9 +25,11 @@ class MainWindow(QMainWindow):
 
         # Pages
         self.login_page = LoginPage(self.show_dashboard)
-        self.dashboard_page = DashboardPage(self.db, self.show_camera, self.show_automation)
-        self.camera_page = CameraPage(self.show_dashboard)
-        self.automation_page = AutomationPage(self.show_dashboard, self.get_snapshot_data)
+        self.dashboard_page = DashboardPage(
+            self.db, self.show_camera, self.show_automation)
+        self.camera_page = CameraPage(self.db, self.show_dashboard)
+        self.automation_page = AutomationPage(
+            self.show_dashboard, self.get_snapshot_data)
 
         self.stacked_widget.addWidget(self.login_page)
         self.stacked_widget.addWidget(self.dashboard_page)
@@ -43,15 +45,18 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentWidget(self.dashboard_page)
 
     def show_camera(self):
+        building_id = self.dashboard_page.selected_building_id
+        room_id = self.dashboard_page.selected_room_id
+        self.camera_page.set_location(building_id, room_id)
         self.stacked_widget.setCurrentWidget(self.camera_page)
-    
+
     def show_automation(self):
         self.stacked_widget.setCurrentWidget(self.automation_page)
-    
+
     def get_snapshot_data(self):
         """Get current snapshot data from camera page."""
         # This will be called by the automation scheduler
-        # For now, return mock data - in real implementation, 
+        # For now, return mock data - in real implementation,
         # this would get data from the camera page
         from datetime import datetime
         return {
