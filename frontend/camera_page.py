@@ -8,16 +8,25 @@ from datetime import datetime
 
 
 class CameraPage(QWidget):
-    def __init__(self, back_to_dashboard):
+    def __init__(self, db, back_to_dashboard):
         super().__init__()
         layout = QVBoxLayout()
+        self.db = db
+        self.building_id = None
+        self.room_id = None
         layout.setContentsMargins(80, 60, 80, 60)
         layout.setSpacing(30)
 
-        title = QLabel("Camera Page")
+        title = QLabel("Facility Live Camera Feed")
         title.setAlignment(QtCore.Qt.AlignCenter)
         title.setStyleSheet(
-            "font-size: 24px; font-weight: bold; margin-bottom: 24px;")
+            "font-size: 24px; font-weight: bold;")
+
+        self.building_label = QLabel("Viewing Building: ")
+        self.building_label.setStyleSheet(
+            "font-size: 16px;")
+        self.room_label = QLabel("ViewingRoom: ")
+        self.room_label.setStyleSheet("font-size: 16px;")
 
         self.video_label = QLabel()
         self.video_label.setFixedSize(800, 600)
@@ -65,6 +74,8 @@ class CameraPage(QWidget):
         nav_layout.addWidget(snapshot_btn)
 
         layout.addWidget(title)
+        layout.addWidget(self.building_label)
+        layout.addWidget(self.room_label)
         layout.addWidget(self.video_label, alignment=QtCore.Qt.AlignCenter)
         layout.addWidget(self.count_label)
         layout.addLayout(nav_layout)
@@ -132,24 +143,32 @@ class CameraPage(QWidget):
         if self.camera_running:
             current_time = datetime.now()
             timestamp = current_time.strftime("%Y-%m-%d %H:%M:%S")
-            
-            # For now, just print the data (will be saved to DB later)
-            snapshot_data = {
-                'people_count': self.current_count,
-                'timestamp': timestamp,
-                'datetime_obj': current_time
-            }
-            
+
             print(f"📸 Snapshot taken:")
-            print(f"   People in room: {snapshot_data['people_count']}")
-            print(f"   Timestamp: {snapshot_data['timestamp']}")
-            
+            print(f"   Current Room Id: {self.room_id}")
+            print(f"   People in room: {self.current_count}")
+            print(f"   Timestamp: {timestamp}")
+
             # TODO: Save to database
-            # self.db.save_snapshot(snapshot_data)
-            
+            self.db.save_snapshot(self.room_id, timestamp, self.current_count)
+
         else:
             print("Camera is not running - cannot take snapshot")
 
     def closeEvent(self, event):
         self.stop_camera()
         event.accept()
+
+    def set_location(self, building_id, room_id):
+        self.building_id = building_id
+        self.room_id = room_id
+        print(
+            f"CameraPage location set to Building ID: {building_id}, Room ID: {room_id}")
+        room = self.db.get_room(room_id)
+        building = self.db.get_building(building_id)
+        print("Building from DB:", building)
+        print("Room from DB:", room)
+
+        self.building_label.setText(f"Viewing Building: {building['name']}")
+        self.room_label.setText(
+            f"Viewing Room: {room['number']}, Max Capacity: {room['capacity']}")
