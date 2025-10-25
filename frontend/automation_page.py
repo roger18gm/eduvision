@@ -27,9 +27,17 @@ class AutomationPage(QWidget):
         layout.setSpacing(20)
         
         # Title
-        title = QLabel("Automation Scheduler")
+        title = QLabel("⚙️ Automation Scheduler")
         title.setAlignment(QtCore.Qt.AlignCenter)
-        title.setStyleSheet("font-size: 24px; font-weight: bold; margin-bottom: 20px;")
+        title.setStyleSheet("""
+            QLabel {
+                font-size: 32px;
+                font-weight: bold;
+                color: #00d4ff;
+                background: transparent;
+                margin-bottom: 20px;
+            }
+        """)
         
         # Create main content layout
         main_layout = QHBoxLayout()
@@ -46,9 +54,22 @@ class AutomationPage(QWidget):
         # Navigation
         nav_layout = QHBoxLayout()
         back_btn = QPushButton("Back to Dashboard")
-        back_btn.setStyleSheet(
-            "background-color: #757575; color: white; font-size: 15px; padding: 8px 18px; border-radius: 6px;"
-        )
+        back_btn.setStyleSheet("""
+            QPushButton {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #757575, stop:1 #616161);
+                border: none;
+                border-radius: 10px;
+                color: #ffffff;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 15px 25px;
+            }
+            QPushButton:hover {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #9e9e9e, stop:1 #757575);
+            }
+        """)
         back_btn.clicked.connect(self.back_to_dashboard)
         
         nav_layout.addWidget(back_btn)
@@ -60,7 +81,12 @@ class AutomationPage(QWidget):
         layout.addLayout(nav_layout)
         
         self.setLayout(layout)
-        self.setStyleSheet("background: #f5f5f5;")
+        self.setStyleSheet("""
+            QWidget {
+                background: transparent;
+                color: #ffffff;
+            }
+        """)
     
     def create_schedule_panel(self):
         """Create the schedule creation panel."""
@@ -68,7 +94,24 @@ class AutomationPage(QWidget):
         
         # Schedule creation group
         creation_group = QGroupBox("Create New Schedule")
-        creation_group.setStyleSheet("QGroupBox { font-weight: bold; }")
+        creation_group.setStyleSheet("""
+            QGroupBox {
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid rgba(0, 212, 255, 0.3);
+                border-radius: 15px;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 16px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+                color: #00d4ff;
+            }
+        """)
         creation_layout = QFormLayout()
         
         # Schedule type
@@ -129,7 +172,24 @@ class AutomationPage(QWidget):
         
         # Quick actions
         actions_group = QGroupBox("Quick Actions")
-        actions_group.setStyleSheet("QGroupBox { font-weight: bold; }")
+        actions_group.setStyleSheet("""
+            QGroupBox {
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid rgba(255, 152, 0, 0.3);
+                border-radius: 15px;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 16px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+                color: #ff9800;
+            }
+        """)
         actions_layout = QVBoxLayout()
         
         # Quick schedule buttons
@@ -161,7 +221,24 @@ class AutomationPage(QWidget):
         
         # Active schedules group
         schedules_group = QGroupBox("Active Schedules")
-        schedules_group.setStyleSheet("QGroupBox { font-weight: bold; }")
+        schedules_group.setStyleSheet("""
+            QGroupBox {
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid rgba(0, 212, 255, 0.3);
+                border-radius: 15px;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 16px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+                color: #00d4ff;
+            }
+        """)
         schedules_layout = QVBoxLayout()
         
         # Schedules table
