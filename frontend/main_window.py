@@ -8,6 +8,7 @@ from matplotlib.figure import Figure
 from frontend.camera_page import CameraPage
 from frontend.dashboard_page import DashboardPage
 from frontend.login_page import LoginPage
+from database.db_repository import Database
 
 
 class MainWindow(QMainWindow):
@@ -15,13 +16,14 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("EduVision")
         self.resize(1200, 800)
+        self.db = Database()
 
         self.stacked_widget = QStackedWidget()
         self.setCentralWidget(self.stacked_widget)
 
         # Pages
         self.login_page = LoginPage(self.show_dashboard)
-        self.dashboard_page = DashboardPage(self.show_camera)
+        self.dashboard_page = DashboardPage(self.db, self.show_camera)
         self.camera_page = CameraPage(self.show_dashboard)
 
         self.stacked_widget.addWidget(self.login_page)

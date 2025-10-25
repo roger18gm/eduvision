@@ -5,8 +5,10 @@ from matplotlib.figure import Figure
 
 
 class DashboardPage(QWidget):
-    def __init__(self, switch_to_camera):
+    def __init__(self, db, switch_to_camera):
         super().__init__()
+        self.db = db
+        self.switch_to_camera = switch_to_camera  # double check this
 
         # --- Main Layout ---
         main_layout = QHBoxLayout()
@@ -29,24 +31,31 @@ class DashboardPage(QWidget):
         title = QLabel("Dashboard Page")
         title.setStyleSheet(
             "font-size: 24px; font-weight: bold; margin-bottom: 24px;")
-        buildingComboBox = QComboBox()
-        buildingComboBox.addItems(["Building A", "Building B", "Building C"])
-        buildingComboBox.setStyleSheet("font-size: 16px; padding: 6px;")
-        roomComboBox = QComboBox()
-        roomComboBox.addItems(["Room 101", "Room 102", "Room 201"])
-        roomComboBox.setStyleSheet("font-size: 16px; padding: 6px;")
+
+        self.buildingComboBox = QComboBox()
+        self.buildingComboBox.addItems(
+            ["Building A", "Building B", "Building C"])
+        self.buildingComboBox.setStyleSheet("font-size: 16px; padding: 6px;")
+        self.buildingComboBox.currentIndexChanged.connect(
+            self.on_building_changed)
+
+        self.roomComboBox = QComboBox()
+        self.roomComboBox.addItems(["Room 101", "Room 102", "Room 201"])
+        self.roomComboBox.setStyleSheet("font-size: 16px; padding: 6px;")
+
         automation_btn = QPushButton("Go to Automation")
         automation_btn.setStyleSheet(
             "background-color: #43a047; color: white; font-size: 16px; padding: 8px; margin-top: 16px;")
         automation_btn.clicked.connect(self.switch_to_automation)
+
         camera_btn = QPushButton("Go to Camera")
         camera_btn.setStyleSheet(
             "background-color: #1976d2; color: white; font-size: 16px; padding: 8px; margin-top: 8px;")
         camera_btn.clicked.connect(switch_to_camera)
 
         controls_container.addWidget(title)
-        controls_container.addWidget(buildingComboBox)
-        controls_container.addWidget(roomComboBox)
+        controls_container.addWidget(self.buildingComboBox)
+        controls_container.addWidget(self.roomComboBox)
         controls_container.addWidget(automation_btn)
         controls_container.addWidget(camera_btn)
         controls_container.addStretch()
@@ -59,6 +68,7 @@ class DashboardPage(QWidget):
         self.setStyleSheet("background: #f5f5f5;")
 
         self.plot_sample_graph()
+        self.load_buildings()
 
     def plot_sample_graph(self):
         ax = self.figure.add_subplot(111)
@@ -71,3 +81,24 @@ class DashboardPage(QWidget):
 
     def switch_to_automation(self):
         pass  # Placeholder for automation page switch
+
+    def load_buildings(self):
+        buildings = self.db.get_buildings()
+        self.buildingComboBox.clear()
+        self.building_ids = []
+        for b in buildings:
+            self.buildingComboBox.addItem(b['name'])
+            self.building_ids.append(b['building_id'])
+        if buildings:
+            self.load_rooms(self.building_ids[0])
+
+    def on_building_changed(self, index):
+        if index >= 0 and index < len(self.building_ids):
+            building_id = self.building_ids[index]
+            self.load_rooms(building_id)
+
+    def load_rooms(self, building_id):
+        rooms = self.db.get_rooms_by_building(building_id)
+        self.roomComboBox.clear()
+        for r in rooms:
+            self.roomComboBox.addItem(r['number'])
