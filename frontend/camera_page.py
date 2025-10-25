@@ -19,20 +19,17 @@ class CameraPage(QWidget):
             "font-size: 24px; font-weight: bold; margin-bottom: 24px;")
 
         self.video_label = QLabel()
-        self.video_label.setFixedSize(640, 360)
+        self.video_label.setFixedSize(800, 600)
         self.video_label.setStyleSheet(
             "background: #222; border-radius: 12px;")
         self.video_label.setAlignment(QtCore.Qt.AlignCenter)
 
-        self.count_label = QLabel("Count: 0")
-        self.count_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.count_label = QLabel("People in the room: 0")
+        self.count_label.setAlignment(QtCore.Qt.AlignLeft)
         self.count_label.setStyleSheet(
-            "font-size: 18px; color: #1976d2; margin-top: 16px;")
+            "font-size: 18px; color: #1976d2; margin-top: 16px; margin-left: 20px;")
 
-        self.toggle_button = QPushButton("Start Camera")
-        self.toggle_button.setStyleSheet(
-            "background-color: #1976d2; color: white; font-size: 16px; padding: 10px 24px; border-radius: 6px; margin-top: 24px;"
-        )
+        # Remove the toggle button - camera will start automatically
 
         # --- Navigation Buttons ---
         nav_layout = QHBoxLayout()
@@ -46,11 +43,13 @@ class CameraPage(QWidget):
         prev_btn.setStyleSheet(
             "background-color: #bdbdbd; color: #222; font-size: 15px; padding: 8px 18px; border-radius: 6px;"
         )
+        prev_btn.clicked.connect(self.switch_camera)
 
         next_btn = QPushButton("Next Camera")
         next_btn.setStyleSheet(
             "background-color: #bdbdbd; color: #222; font-size: 15px; padding: 8px 18px; border-radius: 6px;"
         )
+        next_btn.clicked.connect(self.switch_camera)
 
         nav_layout.addWidget(back_btn)
         nav_layout.addStretch()
@@ -60,7 +59,6 @@ class CameraPage(QWidget):
         layout.addWidget(title)
         layout.addWidget(self.video_label, alignment=QtCore.Qt.AlignCenter)
         layout.addWidget(self.count_label)
-        layout.addWidget(self.toggle_button, alignment=QtCore.Qt.AlignCenter)
         layout.addLayout(nav_layout)
         layout.addStretch()
 
@@ -71,17 +69,12 @@ class CameraPage(QWidget):
         self.camera_thread = None
         self.camera_running = False
 
-        # --- Signals ---
-        self.toggle_button.clicked.connect(self.toggle_camera)
+        # --- Auto-start camera ---
+        self.start_camera()
 
     # ---------------------
     # CAMERA CONTROL
     # ---------------------
-    def toggle_camera(self):
-        if not self.camera_running:
-            self.start_camera()
-        else:
-            self.stop_camera()
 
     def start_camera(self):
         self.camera_thread = CameraThread()
@@ -90,7 +83,6 @@ class CameraPage(QWidget):
         self.camera_thread.start()
 
         self.camera_running = True
-        self.toggle_button.setText("Stop Camera")
 
     def stop_camera(self):
         if self.camera_thread:
@@ -99,9 +91,8 @@ class CameraPage(QWidget):
             self.camera_thread = None
 
         self.video_label.clear()
-        self.count_label.setText("Count: 0")
+        self.count_label.setText("People in the room: 0")
         self.camera_running = False
-        self.toggle_button.setText("Start Camera")
 
     # ---------------------
     # FRAME UPDATES
@@ -113,7 +104,18 @@ class CameraPage(QWidget):
         self.video_label.setPixmap(QPixmap.fromImage(qt_image))
 
     def update_count(self, count):
-        self.count_label.setText(f"Count: {count}")
+        self.count_label.setText(f"People in the room: {count}")
+
+    def switch_camera(self):
+        """Switch to the next available camera"""
+        if self.camera_thread and self.camera_running:
+            success = self.camera_thread.switch_camera()
+            if success:
+                print("Camera switch requested successfully")
+            else:
+                print("No other cameras available or switch failed")
+        else:
+            print("Camera is not running")
 
     def closeEvent(self, event):
         self.stop_camera()
