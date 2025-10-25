@@ -8,6 +8,7 @@ from matplotlib.figure import Figure
 from frontend.camera_page import CameraPage
 from frontend.dashboard_page import DashboardPage
 from frontend.login_page import LoginPage
+from frontend.automation_page import AutomationPage
 from database.db_repository import Database
 
 
@@ -23,12 +24,14 @@ class MainWindow(QMainWindow):
 
         # Pages
         self.login_page = LoginPage(self.show_dashboard)
-        self.dashboard_page = DashboardPage(self.db, self.show_camera)
+        self.dashboard_page = DashboardPage(self.db, self.show_camera, self.show_automation)
         self.camera_page = CameraPage(self.show_dashboard)
+        self.automation_page = AutomationPage(self.show_dashboard, self.get_snapshot_data)
 
         self.stacked_widget.addWidget(self.login_page)
         self.stacked_widget.addWidget(self.dashboard_page)
         self.stacked_widget.addWidget(self.camera_page)
+        self.stacked_widget.addWidget(self.automation_page)
 
         self.show_login()
 
@@ -40,3 +43,18 @@ class MainWindow(QMainWindow):
 
     def show_camera(self):
         self.stacked_widget.setCurrentWidget(self.camera_page)
+    
+    def show_automation(self):
+        self.stacked_widget.setCurrentWidget(self.automation_page)
+    
+    def get_snapshot_data(self):
+        """Get current snapshot data from camera page."""
+        # This will be called by the automation scheduler
+        # For now, return mock data - in real implementation, 
+        # this would get data from the camera page
+        from datetime import datetime
+        return {
+            'people_count': 0,  # Will be updated by camera page
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'datetime_obj': datetime.now()
+        }
