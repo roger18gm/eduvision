@@ -1,4 +1,5 @@
-import sqlite3, bcrypt
+import sqlite3
+import bcrypt
 
 conn = sqlite3.connect("./database/eduvisiondb.db")
 cursor = conn.cursor()
