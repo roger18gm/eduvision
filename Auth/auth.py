@@ -2,7 +2,7 @@ import sqlite3
 import bcrypt
 
 class Auth:
-    def __init__(self, db_path="C:/Users/vinni/OneDrive/Documents/Hackathon Fall 2025/eduvision/database/eduvisiondb.db"):
+    def __init__(self, db_path="./database/eduvisiondb.db"):
         self.db_path = db_path
 
     def verify_user(self, username, password):
