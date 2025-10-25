@@ -38,29 +38,6 @@ class PeopleCounter:
             self.fps = 30 / (current_time - self.fps_start_time)
             self.fps_start_time = current_time
     
-    def draw_info_panel(self, frame, current_camera=None, available_cameras=None):
-        """Draw information panel on the frame"""
-        # Create semi-transparent overlay
-        overlay = frame.copy()
-        cv2.rectangle(overlay, (10, 10), (350, 120), (0, 0, 0), -1)
-        cv2.addWeighted(overlay, 0.7, frame, 0.3, 0, frame)
-        
-        # Draw text information
-        cv2.putText(frame, f"People in room: {self.current_count}", (20, 40), 
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-        cv2.putText(frame, f"FPS: {float(self.fps):.1f}", (20, 70), 
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-        
-        # Draw camera information
-        if current_camera is not None:
-            cv2.putText(frame, f"Camera: {current_camera}", (20, 100), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-        
-        if available_cameras and len(available_cameras) > 1:
-            cameras_text = f"Available: {', '.join(map(str, available_cameras))}"
-            cv2.putText(frame, cameras_text, (20, 120), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
-    
     def count_persons(self, detections):
         """Count persons in current frame"""
         person_count = 0
@@ -103,9 +80,6 @@ class PeopleCounter:
         
         # Calculate FPS
         self.calculate_fps()
-        
-        # Draw information panel
-        self.draw_info_panel(frame, current_camera, available_cameras)
         
         return frame
 
