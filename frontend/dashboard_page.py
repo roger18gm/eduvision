@@ -5,10 +5,11 @@ from matplotlib.figure import Figure
 
 
 class DashboardPage(QWidget):
-    def __init__(self, db, switch_to_camera):
+    def __init__(self, db, switch_to_camera, switch_to_automation):
         super().__init__()
         self.db = db
-        self.switch_to_camera = switch_to_camera  # double check this
+        self.switch_to_camera = switch_to_camera
+        self.switch_to_automation = switch_to_automation
 
         # --- Main Layout ---
         main_layout = QHBoxLayout()
@@ -46,7 +47,7 @@ class DashboardPage(QWidget):
         automation_btn = QPushButton("Go to Automation")
         automation_btn.setStyleSheet(
             "background-color: #43a047; color: white; font-size: 16px; padding: 8px; margin-top: 16px;")
-        automation_btn.clicked.connect(self.switch_to_automation)
+        automation_btn.clicked.connect(self.go_to_automation)
 
         camera_btn = QPushButton("Go to Camera")
         camera_btn.setStyleSheet(
@@ -79,8 +80,8 @@ class DashboardPage(QWidget):
         ax.set_ylabel("Count")
         self.canvas.draw()
 
-    def switch_to_automation(self):
-        pass  # Placeholder for automation page switch
+    def go_to_automation(self):
+        self.switch_to_automation()
 
     def load_buildings(self):
         buildings = self.db.get_buildings()
