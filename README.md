@@ -11,3 +11,4 @@ git rebase origin/main
 git push origin branch-name
 
 pip freeze > requirements.txt
+pip install -r requirements.txt
