@@ -1,5 +1,13 @@
+import sys
+from PyQt5.QtWidgets import QApplication
+from frontend.mainWindow import MainWindow
+
+
 def main():
-    print("Welcome to EduVision!")
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
 
 
 if __name__ == "__main__":
