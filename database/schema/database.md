@@ -154,6 +154,6 @@ Stores raw occupancy data collected from sensors or manual counts.
 
 ---
 
-*Last Updated: October 2024*  
+*Last Updated: N 2024*  
 *Database: eduvisiondb.db*  
 *DBMS: SQLite 3*
