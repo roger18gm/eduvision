@@ -229,7 +229,7 @@ For detailed information about specific subsystems, refer to:
 **Vinnicius Castro**
 - GitHub: [github.com/vinniciuscastro](https://github.com/vinniciuscastro)
 - LinkedIn: [linkedin.com/in/vinnicius-castro](https://www.linkedin.com/in/vinnicius-castro/)
-- Database and Data Managment
+- Database and Data Management
 
 ## Contributing
 
