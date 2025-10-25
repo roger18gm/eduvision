@@ -5,7 +5,7 @@ import time
 from vision.iphone import initialize_camera, switch_camera, get_available_cameras
 
 class PeopleCounter:
-    def __init__(self, model_path='yolov8n.pt', confidence_threshold=0.5):
+    def __init__(self, model_path='best.pt', confidence_threshold=0.5):
         """
         Initialize the people counter with YOLO model
         
