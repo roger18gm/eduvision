@@ -17,5 +17,10 @@ class Database:
             "SELECT room_id, number FROM room WHERE building_id = ?", (building_id,))
         return [dict(row) for row in cursor.fetchall()]
 
+    def get_room_capacity(self, room_id):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT capacity FROM room WHERE room_id = ?", (room_id,))
+        return cursor.fetchone()[0]
+
     def close(self):
         self.conn.close()

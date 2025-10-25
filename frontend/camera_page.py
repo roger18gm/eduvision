@@ -4,6 +4,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtGui import QImage, QPixmap
 import cv2
 from frontend.camera_thread import CameraThread
+from datetime import datetime
 
 
 class CameraPage(QWidget):
@@ -51,10 +52,17 @@ class CameraPage(QWidget):
         )
         next_btn.clicked.connect(self.switch_camera)
 
+        snapshot_btn = QPushButton("📸 Snapshot")
+        snapshot_btn.setStyleSheet(
+            "background-color: #4caf50; color: white; font-size: 15px; padding: 8px 18px; border-radius: 6px;"
+        )
+        snapshot_btn.clicked.connect(self.take_snapshot)
+
         nav_layout.addWidget(back_btn)
         nav_layout.addStretch()
         nav_layout.addWidget(prev_btn)
         nav_layout.addWidget(next_btn)
+        nav_layout.addWidget(snapshot_btn)
 
         layout.addWidget(title)
         layout.addWidget(self.video_label, alignment=QtCore.Qt.AlignCenter)
@@ -68,6 +76,7 @@ class CameraPage(QWidget):
         # --- State ---
         self.camera_thread = None
         self.camera_running = False
+        self.current_count = 0
 
         # --- Auto-start camera ---
         self.start_camera()
@@ -105,6 +114,7 @@ class CameraPage(QWidget):
 
     def update_count(self, count):
         self.count_label.setText(f"People in the room: {count}")
+        self.current_count = count
 
     def switch_camera(self):
         """Switch to the next available camera"""
@@ -116,6 +126,29 @@ class CameraPage(QWidget):
                 print("No other cameras available or switch failed")
         else:
             print("Camera is not running")
+
+    def take_snapshot(self):
+        """Take a snapshot of current count and timestamp"""
+        if self.camera_running:
+            current_time = datetime.now()
+            timestamp = current_time.strftime("%Y-%m-%d %H:%M:%S")
+            
+            # For now, just print the data (will be saved to DB later)
+            snapshot_data = {
+                'people_count': self.current_count,
+                'timestamp': timestamp,
+                'datetime_obj': current_time
+            }
+            
+            print(f"📸 Snapshot taken:")
+            print(f"   People in room: {snapshot_data['people_count']}")
+            print(f"   Timestamp: {snapshot_data['timestamp']}")
+            
+            # TODO: Save to database
+            # self.db.save_snapshot(snapshot_data)
+            
+        else:
+            print("Camera is not running - cannot take snapshot")
 
     def closeEvent(self, event):
         self.stop_camera()
